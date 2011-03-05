@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'Time'
 require 'openssl'
+require 'haml'
 
 class Certificate
  def initialize(domain)
@@ -40,5 +41,44 @@ end
 
 get '/snakeoil/:domain' do
  n = Certificate.new(params[:domain])
- "Self-Signed Certificate Generated for: #{n.domain}  #{n.pem} /n #{n.cert}"
+ haml :index, :locals => {:cert => "#{n.cert}",:key => "#{n.key}",:domain => "#{n.domain}",:pem => "#{n.pem}"}
 end
+
+__END__
+
+@@ index
+!!!  
+%html  
+  %head  
+    %title Free Self Signed Certificates  
+  %style{:type => "text/css", :media => "screen"}
+    :plain
+      p {
+        font-family: sans;
+        font-size: 15px;
+        color: blue;
+      }
+      
+  %body
+    %div{:style => "width:260px; margin:25px;"}  
+      %p A self signed certificate has been generated for #{domain}  
+      %p Certificate
+      %p #{cert}
+      %p Private Key
+      %p #{pem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
